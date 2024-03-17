@@ -1,0 +1,26 @@
+# docker compose to build dockerfile and postgresql 
+# docker-compose up --build
+# docker-compose up
+
+# docker-compose down
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: recommendations
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  recommendations:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "80:5000"
+    depends_on:
+      - db

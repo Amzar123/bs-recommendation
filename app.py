@@ -36,12 +36,7 @@ def get_resource(id):
     # Your implementation to fetch the resource
     return {'id': id, 'name': 'Sample Resource'}, 200
 
-@app.route("/spec")
-def spec():
-    swag = swagger(app)
-    swag['info']['version'] = "1.0"
-    swag['info']['title'] = "My API"
-    return jsonify(swag)
+
 
 # Konfigurasi koneksi database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/database_name'
@@ -59,6 +54,13 @@ recommendation_service = RecommendationService(recommendation_repository)
 # Register the blueprint from the controller
 recommendation_controller = RecommendationController(recommendation_service)
 app.register_blueprint(recommendation_controller.blueprint, url_prefix='/recommendations')
+
+@app.route("/spec")
+def spec():
+    swag = swagger(app)
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "My API"
+    return jsonify(swag)
 
 # Route to serve Swagger UI
 swaggerui_blueprint = get_swaggerui_blueprint('/docs', '/spec')
