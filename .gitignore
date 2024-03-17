@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local development configuration
+instance/
+
+# Environment variables
+.env
+
+# Compiled Python files
+*.pyc
+*.pyo
+
+# Dependency directories
+venv/
+env/
+env-bak/
+
+# Development files
+*.log
+*.pot
+*.potx
+*.po~
+*.swp
+*~
+__pycache__/
