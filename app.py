@@ -52,4 +52,4 @@ swaggerui_blueprint = get_swaggerui_blueprint('/docs', '/spec')
 app.register_blueprint(swaggerui_blueprint, url_prefix='/docs')
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0", port=5000)
+    app.run(debug=True)

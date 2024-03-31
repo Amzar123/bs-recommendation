@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Run app.py when the container launches
-CMD ["flask", "run", "--debug"]
+CMD ["flask", "run", "--debug", "--host=0.0.0.0", "--port=5000", "--reload"]
