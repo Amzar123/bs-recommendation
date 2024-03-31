@@ -19,7 +19,9 @@ app = Flask(__name__)
 # # logging db port 
 # print(DB_PORT)
 
-DB_URL = f"postgresql://postgres:postgres@localhost:5432/recommendations"
+app = Flask(__name__)
+
+DB_URL = f"postgresql://postgres:postgres@localhost:5432/system-recommendation"
 
 # Konfigurasi koneksi database
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
@@ -50,4 +52,4 @@ swaggerui_blueprint = get_swaggerui_blueprint('/docs', '/spec')
 app.register_blueprint(swaggerui_blueprint, url_prefix='/docs')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host="0.0.0.0", port=5000)

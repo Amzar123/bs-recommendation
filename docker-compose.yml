@@ -6,14 +6,12 @@
 version: '3'
 services:
   db:
-    image: postgres
+    image: postgres:16.2
     restart: always
     environment:
-      DATABASE_NAME: recommendations
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
+      POSTGRES_DB: system-recommendation
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
