@@ -5,23 +5,24 @@ from src.controller.recommendation_controller import RecommendationController
 from src.repository.recommendation_repo import RecommendationRepo
 from src.service.recommendation_service import RecommendationService
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
 
-# Construct the database connection URL
-# DB_USERNAME = os.getenv("DATABASE_USER")
-# DB_NAME = os.getenv("DATABASE_NAME")
-# DB_HOST = os.getenv("DATABASE_HOST")
-# DB_PORT = os.getenv("DATABASE_PORT")
-# DB_PASSWORD = os.getenv("DATABASE_PASSWORD")
+# Load environment variables from .env
+load_dotenv()
 
-# # logging db port 
-# print(DB_PORT)
+DB_USERNAME = os.getenv("DATABASE_USER")
+DB_NAME = os.getenv("DATABASE_NAME")
+DB_HOST = os.getenv("DATABASE_HOST")
+DB_PORT = os.getenv("DATABASE_PORT")
+DB_PASSWORD = os.getenv("DB_PW")
 
 app = Flask(__name__)
 
-DB_URL = f"postgresql://postgres:postgres@localhost:5432/system-recommendation"
+DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # Konfigurasi koneksi database
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
@@ -29,6 +30,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Import db 
 db = SQLAlchemy(app)
+
+# Migration 
+migrate = Migrate(app, db)
 
 # Register the blueprint from the repository
 recommendation_repository = RecommendationRepo(db)
@@ -51,5 +55,13 @@ def spec():
 swaggerui_blueprint = get_swaggerui_blueprint('/docs', '/spec')
 app.register_blueprint(swaggerui_blueprint, url_prefix='/docs')
 
+with app.app_context():
+        try:
+            db.engine.connect()
+            print("Connected to the database")
+        except Exception as e:
+            print("Failed to connect to the database:", str(e))
+
 if __name__ == '__main__':
+    # Check if connected to the database
     app.run(debug=True)
