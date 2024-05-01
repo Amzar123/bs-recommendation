@@ -60,6 +60,7 @@ class Util:
 
             # Initialize database
             db = SQLAlchemy(app)
+
             Util._db = db
 
             return Util._db

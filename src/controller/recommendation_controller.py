@@ -3,7 +3,8 @@
 Author: Aji Muhammad Zapar
 Date: 2024-05-01
 """
-from flask import Blueprint, jsonify
+import logging
+from flask import Blueprint, jsonify, request
 from src.service.recommendation_service import RecommendationService
 from src.utils.response import Response
 
@@ -31,7 +32,7 @@ class RecommendationController:
         self.blueprint.add_url_rule(
             '/list',
             view_func=self.get_recommendations,
-            methods=['GET']
+            methods=['POST']
         )
 
     def get_recommendations(self):
@@ -44,7 +45,29 @@ class RecommendationController:
         Raises:
           404: If recommendation is not found.
         """
-        result = self.recommendation_service.get_recommendations()
+        content_type = request.headers.get('Content-Type')
+        if content_type != 'application/json':
+            return Response(
+                message='Invalid request content type',
+                code=400
+            ).to_dict()
+
+        if not request.is_json:
+            return Response(
+                message='Request body must be a valid JSON object',
+                code=400
+            ).to_dict()
+
+        request_body = request.get_json()
+        if 'ids' not in request_body:
+            return Response(
+                message='Request body must contain an "ids" field',
+                code=400
+            ).to_dict()
+
+        ids = request_body['ids']
+
+        result = self.recommendation_service.get_recommendations(ids)
         return Response(
             message='Recommendations retrieved successfully',
             data={

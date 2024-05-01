@@ -1,17 +1,17 @@
-from src.utils.util import Util
+from flask_sqlalchemy import SQLAlchemy
 
-
-class Student(Util.get_db().Model):
+db_model = SQLAlchemy()
+class Student:
     __tablename__ = 'students'
 
-    id = Util.get_db().Column(Util.get_db().Integer, primary_key=True)
-    name = Util.get_db().Column(Util.get_db().String(50))
-    email = Util.get_db().Column(Util.get_db().String(50))
-    password = Util.get_db().Column(Util.get_db().String(50))
-    institution = Util.get_db().Column(Util.get_db().String(50))
-    code = Util.get_db().Column(Util.get_db().String(50))
-    created_at = Util.get_db().Column(Util.get_db().DateTime)
-    updated_at = Util.get_db().Column(Util.get_db().DateTime)
+    id = db_model.Column(db_model.String, primary_key=True)
+    name = db_model.Column(db_model.String(50))
+    email = db_model.Column(db_model.String(50))
+    password = db_model.Column(db_model.String(50))
+    institution = db_model.Column(db_model.String(50))
+    code = db_model.Column(db_model.String(50))
+    created_at = db_model.Column(db_model.DateTime)
+    updated_at = db_model.Column(db_model.DateTime)
 
     def __init__(
             self,
@@ -29,7 +29,3 @@ class Student(Util.get_db().Model):
         self.code = code
         self.created_at = created_at
         self.updated_at = updated_at
-
-    @staticmethod
-    def get_all_users():
-        return Student.query.all()

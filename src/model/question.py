@@ -1,4 +1,5 @@
-from utils.util import Util
+from src.utils.util import Util
+
 
 
 class Question(Util.get_db().Model):
