@@ -1,5 +1,6 @@
 from utils.util import Util
 
+
 class Question(Util.get_db().Model):
     __tablename__ = 'questions'
 

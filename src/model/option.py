@@ -1,11 +1,14 @@
 from utils.util import Util
 
+
 class Option(Util.get_db().Model):
     __tablename__ = 'options'
 
     id = Util.get_db().Column(Util.get_db().Integer, primary_key=True)
     option = Util.get_db().Column(Util.get_db().String(50))
-    question_id = Util.get_db().Column(Util.get_db().Integer, Util.get_db().ForeignKey('questions.id'))
+    question_id = Util.get_db().Column(
+        Util.get_db().Integer,
+        Util.get_db().ForeignKey('questions.id'))
     created_at = Util.get_db().Column(Util.get_db().DateTime)
     updated_at = Util.get_db().Column(Util.get_db().DateTime)
 

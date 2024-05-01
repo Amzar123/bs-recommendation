@@ -1,4 +1,5 @@
-from src.utils.util import Util 
+from src.utils.util import Util
+
 
 class Teacher(Util.get_db().Model):
     __tablename__ = 'teachers'
@@ -11,7 +12,15 @@ class Teacher(Util.get_db().Model):
     created_at = Util.get_db().Column(Util.get_db().DateTime)
     updated_at = Util.get_db().Column(Util.get_db().DateTime)
 
-    def __init__(self, name, email, password, code, institution, created_at, updated_at):
+    def __init__(
+            self,
+            name,
+            email,
+            password,
+            code,
+            institution,
+            created_at,
+            updated_at):
         self.name = name
         self.email = email
         self.password = password

@@ -1,9 +1,13 @@
 """
 It demonstrates the usage of Flask along with SQLAlchemy and Flask-Migrate for database migrations.
 """
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+load_dotenv()
 
 
 class Util:
@@ -22,7 +26,7 @@ class Util:
         """
         Returns the Flask application instance.
 
-        If the application instance does not exist, 
+        If the application instance does not exist,
         it creates a new instance and configures the database URI.
 
         Returns:
@@ -34,7 +38,7 @@ class Util:
         return Util._app
 
     @staticmethod
-    def get_db():
+    def get_db(app):
         """
         Get the database connection.
 
@@ -42,20 +46,20 @@ class Util:
             SQLAlchemy: The database connection object.
         """
         if Util._db is None:
-            Util._db = SQLAlchemy(Util.get_app())
-        return Util._db
+            db_username = os.getenv("DATABASE_USER")
+            db_name = os.getenv("DATABASE_NAME")
+            db_host = os.getenv("DATABASE_HOST")
+            db_port = os.getenv("DATABASE_PORT")
+            db_password = os.getenv("DB_PW")
 
-    @staticmethod
-    def get_migrate():
-        """
-        Returns the Migrate object for the application.
+            db_url = f"postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
 
-        If the Migrate object is not yet created, it creates a new one using the
-        get_app() and get_db() methods.
+            # Configure database connection
+            app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+            app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-        Returns:
-            Migrate: The Migrate object for the application.
-        """
-        if Util._migrate is None:
-            Util._migrate = Migrate(Util.get_app(), Util.get_db())
-        return Util._migrate
+            # Initialize database
+            db = SQLAlchemy(app)
+            Util._db = db
+
+            return Util._db
