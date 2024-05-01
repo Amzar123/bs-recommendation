@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify
 from src.service.recommendation_service import RecommendationService
 from src.utils.response import Response
 
+
 class RecommendationController:
     """
     This class represents the recommendation controller.
@@ -46,8 +47,8 @@ class RecommendationController:
         result = self.recommendation_service.get_recommendations()
         return Response(
             message='Recommendations retrieved successfully',
-            data= {
+            data={
                 "doc": result,
-              },
+            },
             code=200
         ).to_dict()
