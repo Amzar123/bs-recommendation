@@ -73,9 +73,9 @@ class RecommendationController:
             properties:
              code:
               type: integer
-             message: 
+             message:
               type: string
-             status: 
+             status:
               type: string
         Returns:
           A success message.
@@ -134,9 +134,9 @@ class RecommendationController:
             properties:
              code:
               type: integer
-             message: 
+             message:
               type: string
-             status: 
+             status:
               type: string
              data:
               type: array
@@ -156,7 +156,7 @@ class RecommendationController:
           schema:
             id: Error
             properties:
-               code: 
+               code:
                 type: integer
                 description: The error code
                message:

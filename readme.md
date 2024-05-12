@@ -14,3 +14,14 @@ Akses API dokumentasi  melalui `http://localhost:80/docs`
 2. flask db migrate -m "message"
 3. flask db revision -am "message for name file"
 4. flask db upgrade
+
+# Run linters 
+Analyze code
+```
+pylint src/controller/*.py
+```
+
+Auto fix error 
+```
+autopep8 --in-place --aggressive --aggressive *.py
+```

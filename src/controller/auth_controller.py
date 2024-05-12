@@ -1,47 +1,105 @@
+from flask import Blueprint
+from src.service.auth_service import AuthService
+
+
 class AuthController:
     """
-    This class represents the recommendation controller.
+    This class represents the authentication controller.
 
-    It provides methods to handle recommendation-related operations.
+    It provides methods to handle authentication-related operations.
     """
 
-    def __init__(self, auth_service: RecommendationService):
+    def __init__(self, auth_service: AuthService):
         """
-        Initializes a new instance of the RecommendationController class.
+        Initializes a new instance of the AuthController class.
 
         Args:
-          recommendation_service (RecommendationService): An instance of RecommendationService.
+            auth_service (AuthService): An instance of AuthService.
 
         Returns:
-          None
+            None
         """
-        self.recommendation_service = recommendation_service
-        self.blueprint = Blueprint('controller_blueprint', __name__)
+        self.auth_service = auth_service
+        self.blueprint = Blueprint('auth_controller_blueprint', __name__)
 
         self.blueprint.add_url_rule(
-            '/list',
-            view_func=self.get_recommendations,
-            methods=['POST']
-        )
-
-        self.blueprint.add_url_rule(
-            '/question/upload',
-            view_func=self.upload_questions,
+            '/login',
+            view_func=self.login,
             methods=['POST']
         )
 
     def register(self, username, password):
+        """
+        Registers a new user.
+
+        Args:
+            username (str): The username of the user.
+            password (str): The password of the user.
+
+        Returns:
+            None
+        """
         # Implement user registration logic here
         pass
 
     def login(self, username, password):
+        """
+        Login with email dan password
+        ---
+        parameters:
+         - name: body
+           in: body
+           required: true
+           schema:
+            type: object
+            properties:
+             email:
+              type: string
+              description: masukan email disini
+              required: true
+             password:
+              type: string
+              description: masukan password disini
+              required: true
+        responses:
+         200:
+          description: Logged in successfully
+          schema:
+            type: object
+            properties:
+             code:
+              type: integer
+             message:
+               type: string
+             status:
+               type: string
+             data:
+               type: object
+        Returns:
+         A success message.
+        """
         # Implement user login logic here
         pass
 
     def logout(self):
+        """
+        Logs out the current user.
+
+        Returns:
+            None
+        """
         # Implement user logout logic here
         pass
 
     def reset_password(self, username):
+        """
+        Resets the password for a user.
+
+        Args:
+            username (str): The username of the user.
+
+        Returns:
+            None
+        """
         # Implement password reset logic here
         pass

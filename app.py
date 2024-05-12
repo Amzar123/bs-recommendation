@@ -60,6 +60,7 @@ recommendation_controller = RecommendationController(recommendation_service)
 auth_controller = AuthController(auth_service)
 
 app.register_blueprint(recommendation_controller.blueprint, url_prefix='/recommendations')
+app.register_blueprint(auth_controller.blueprint)
 
 @app.route("/spec")
 def spec():
