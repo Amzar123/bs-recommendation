@@ -1,27 +1,32 @@
 """
 Import repository
 """
-from src.repository.user_repository import User, UserRepository
+from src.repository.teacher_repopsitory import TeacherRepository
+from src.repository.student_repository import StudentRepo
 
-class AuthService: 
+
+class AuthService:
     """
     This class implement for auth
     """
-    def __init__(self, user_repo: UserRepository):
-        self.user_repo = user_repo
+
+    def __init__(
+            self,
+            teacher_repo: TeacherRepository,
+            student_repo: StudentRepo):
+        self.teacher_repo = teacher_repo
+        self.student_repo = student_repo
 
     def login(self, email: str, password: str):
         """
-        This function to handle login process
+        This function handles the login process and returns the result in JSON format.
         """
-        user = self.user_repo.get_user_by_email(email)
-        if user and user.password == password:
-            return user
-        return None
+        teacher = self.teacher_repo.get_teacher_by_email(email, password)
+        if teacher:
+            return teacher
 
-    def register(self, email: str, password: str):
-        """
-        This function handle registration process
-        """
-        user = User(email=email, password=password)
-        return self.user_repo.add_user(user)
+        student = self.student_repo.get_student_by_email(email, password)
+        if student:
+            return student
+
+        return None

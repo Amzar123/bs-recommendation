@@ -9,13 +9,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 
+# Import middleware
+from src.middleware.auth import authenticate_token
+
 # Import controller
 from src.controller.recommendation_controller import RecommendationController
 from src.controller.auth_controller import AuthController
 
 # Import repository
 from src.repository.recommendation_repo import RecommendationRepo
-from src.repository.user_repository import UserRepository
+from src.repository.student_repository import StudentRepo
+from src.repository.teacher_repopsitory import TeacherRepository
 
 # Import service
 from src.service.recommendation_service import RecommendationService
@@ -49,11 +53,12 @@ migrate = Migrate(app, db)
 
 # Register the blueprint from the repository
 recommendation_repository = RecommendationRepo(db)
-user_repository = UserRepository(db)
+student_repo = StudentRepo(db)
+teacher_repo = TeacherRepository(db)
 
 # Register the blueprint from the service
 recommendation_service = RecommendationService(recommendation_repository)
-auth_service = AuthService(user_repository)
+auth_service = AuthService(teacher_repo, student_repo )
 
 # Register the blueprint from the controller
 recommendation_controller = RecommendationController(recommendation_service)

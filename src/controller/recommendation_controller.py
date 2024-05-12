@@ -8,6 +8,8 @@ from flask import Blueprint, jsonify, request
 from src.service.recommendation_service import RecommendationService
 from src.utils.response import Response
 
+from src.middleware.auth import authenticate_token
+
 
 class RecommendationController:
     """
@@ -41,6 +43,7 @@ class RecommendationController:
             methods=['POST']
         )
 
+    @authenticate_token
     def upload_questions(self):
         """
         Upload questions to the recommendation system.
@@ -109,6 +112,7 @@ class RecommendationController:
             code=200
         ).to_dict()
 
+    @authenticate_token
     def get_recommendations(self):
         """
         Get recommendation by IDs.

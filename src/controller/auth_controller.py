@@ -1,5 +1,9 @@
-from flask import Blueprint
+"""
+Import dependencies
+"""
+from flask import Blueprint, jsonify, request
 from src.service.auth_service import AuthService
+from src.middleware.auth import generate_token
 
 
 class AuthController:
@@ -28,58 +32,66 @@ class AuthController:
             methods=['POST']
         )
 
-    def register(self, username, password):
-        """
-        Registers a new user.
-
-        Args:
-            username (str): The username of the user.
-            password (str): The password of the user.
-
-        Returns:
-            None
-        """
-        # Implement user registration logic here
-        pass
-
-    def login(self, username, password):
+    def login(self):
         """
         Login with email dan password
         ---
         parameters:
-         - name: body
-           in: body
-           required: true
-           schema:
-            type: object
-            properties:
-             email:
-              type: string
-              description: masukan email disini
+            - name: body
+              in: body
               required: true
-             password:
-              type: string
-              description: masukan password disini
-              required: true
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: masukan email disini
+                    required: true
+                  password:
+                    type: string
+                    description: masukan password disini
+                    required: true
         responses:
-         200:
-          description: Logged in successfully
-          schema:
-            type: object
-            properties:
-             code:
-              type: integer
-             message:
-               type: string
-             status:
-               type: string
-             data:
-               type: object
+            200:
+              description: Logged in successfully
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  status:
+                    type: string
+                  data:
+                    type: object
         Returns:
-         A success message.
+            A success message with a token.
         """
-        # Implement user login logic here
-        pass
+        # Get user
+        payload = request.get_json()
+        email = payload['email']
+        password = payload['password']
+
+        user = self.auth_service.login(email, password)
+        token = generate_token(email)
+        if user:
+            return {
+                'code': 200,
+                'message': 'Logged in successfully',
+                'status': 'success',
+                'data': {
+                    'user': user,
+                    'token': token
+                }
+            }
+        else:
+            return {
+                'code': 401,
+                'message': 'Invalid credentials',
+                'status': 'error',
+                'data': {}
+            }
 
     def logout(self):
         """
@@ -88,18 +100,19 @@ class AuthController:
         Returns:
             None
         """
-        # Implement user logout logic here
-        pass
+        # Check if the Authorization header exists
+        token = request.headers.get('Authorization', None)
 
-    def reset_password(self, username):
-        """
-        Resets the password for a user.
+        # If no token is provided, return a 400 Bad Request response
+        if not token:
+            return jsonify({'message': 'No token provided'}), 400
 
-        Args:
-            username (str): The username of the user.
+        # Invalidate the token (optional)
+        # In a stateless JWT-based authentication system, tokens are typically invalidated by the client
+        # For demonstration purposes, you can simply return a message
+        # indicating successful logout
 
-        Returns:
-            None
-        """
-        # Implement password reset logic here
-        pass
+        # Here you might add additional logic to perform any necessary cleanup
+        # or logging out on the server side
+
+        return jsonify({'message': 'Successfully logged out'})
