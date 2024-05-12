@@ -8,5 +8,6 @@ class RecommendationService:
 
     def get_recommendations(self, ids: list):
         result = self.recommendation_repo.get_recommendations(ids)
-        mapped = RecommendationMapper.map_recommendation(recommendation_data=result)
-        return  mapped # Fix: Pass 'result' as an argument to 'map_recommendation' method.
+        # mapped = RecommendationMapper.map_recommendation(recommendation_data=result)
+        # return  mapped # Fix: Pass 'result' as an argument to 'map_recommendation' method.
+        return result
