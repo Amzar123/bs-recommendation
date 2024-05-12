@@ -9,8 +9,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 
-# Import middleware
-from src.middleware.auth import authenticate_token
 
 # Import controller
 from src.controller.recommendation_controller import RecommendationController
@@ -58,14 +56,17 @@ teacher_repo = TeacherRepository(db)
 
 # Register the blueprint from the service
 recommendation_service = RecommendationService(recommendation_repository)
-auth_service = AuthService(teacher_repo, student_repo )
+auth_service = AuthService(teacher_repo, student_repo)
 
 # Register the blueprint from the controller
 recommendation_controller = RecommendationController(recommendation_service)
 auth_controller = AuthController(auth_service)
 
-app.register_blueprint(recommendation_controller.blueprint, url_prefix='/recommendations')
+app.register_blueprint(
+    recommendation_controller.blueprint,
+    url_prefix='/recommendations')
 app.register_blueprint(auth_controller.blueprint)
+
 
 @app.route("/spec")
 def spec():
@@ -76,6 +77,7 @@ def spec():
     swag['info']['version'] = "1.0"
     swag['info']['title'] = "Recommendation System API"
     return jsonify(swag)
+
 
 # Route to serve Swagger UI
 swaggerui_blueprint = get_swaggerui_blueprint('/docs', '/spec')
