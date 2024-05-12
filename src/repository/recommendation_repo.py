@@ -2,9 +2,6 @@
 Author: Aji Muhammad Zapar
 Date: 2024-05-01
 """
-
-from sqlalchemy.orm import sessionmaker
-from src.model.recommendation import Recommendation
 from sqlalchemy import text
 
 
