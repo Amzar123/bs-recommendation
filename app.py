@@ -35,8 +35,6 @@ DB_HOST = os.getenv("DATABASE_HOST")
 DB_PORT = os.getenv("DATABASE_PORT")
 DB_PASSWORD = os.getenv("DB_PW")
 
-app = Flask(__name__)
-
 DB_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # Konfigurasi koneksi database
