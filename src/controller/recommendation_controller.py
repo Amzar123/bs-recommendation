@@ -3,8 +3,7 @@
 Author: Aji Muhammad Zapar
 Date: 2024-05-01
 """
-import logging
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 from src.service.recommendation_service import RecommendationService
 from src.utils.response import Response
 
@@ -40,6 +39,12 @@ class RecommendationController:
         self.blueprint.add_url_rule(
             '/question/upload',
             view_func=self.upload_questions,
+            methods=['POST']
+        )
+
+        self.blueprint.add_url_rule(
+            '/generate',
+            view_func=self.generate_recommendation,
             methods=['POST']
         )
 
@@ -109,6 +114,77 @@ class RecommendationController:
 
         return Response(
             message='Questions uploaded successfully',
+            code=200
+        ).to_dict()
+    
+    @authenticate_token
+    def generate_recommendation(self):
+        """
+        Generate recommendations 
+        ---
+        parameters:
+         - name: body
+           in: body
+           required: true
+           schema: 
+            type: object
+            properties:
+              ids:
+               type: array
+               items:
+                type: string
+            required: ids
+            description: Array of student IDs
+        responses:
+          200:
+            description: Recommendation generated successfully
+            schema:
+              type: object
+              properties:
+              code:
+                type: integer
+              message:
+                type: string
+              status:
+                type: string
+          404:
+            description: Recommendation not found
+            schema:
+              id: Error
+              properties:
+                code:
+                  type: integer
+                  description: The error code
+                message:
+                  type: string
+                  description: The error message
+        """
+        content_type = request.headers.get('Content-Type')
+        if content_type != 'application/json':
+            return Response(
+                message='Invalid request content type',
+                code=400
+            ).to_dict()
+
+        if not request.is_json:
+            return Response(
+                message='Request body must be a valid JSON object',
+                code=400
+            ).to_dict()
+
+        request_body = request.get_json()
+        if 'ids' not in request_body:
+            return Response(
+                message='Request body must contain a "ids" field',
+                code=400
+            ).to_dict()
+
+        ids = request_body['ids']
+
+        self.recommendation_service.generate_recommendations(ids)
+
+        return Response(
+            message='Recommendation generated successfully',
             code=200
         ).to_dict()
 

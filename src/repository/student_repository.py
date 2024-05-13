@@ -18,6 +18,15 @@ class StudentRepo:
         result = self.db.session.execute(
             query, {'email': email, 'password': password}).fetchone()
         return self.row_to_dict(result)
+    
+    def get_student_by_ids(self, ids):
+        """
+        This is function to get student by query
+        """
+        query = text(
+            'SELECT * FROM students WHERE id = ANY(:ids)')
+        result = self.db.session.execute(query, {'ids': ids}).fetchall()
+        return self.row_to_dict(result)
 
     def row_to_dict(self, row):
         """
