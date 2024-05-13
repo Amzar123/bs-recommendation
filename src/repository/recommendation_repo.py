@@ -17,12 +17,15 @@ class RecommendationRepo:
         """
         This is function to get recommendations by query
         """
-        print("ini dia self nya ", self.db)
-        # Make query to table recommendations based on the ids
-
-        # results = self.db.execute(query, ids=ids)
-
         query = text(
             'SELECT * FROM recommendations WHERE student_id = ANY(:ids)')
         result = self.db.session.execute(query, {'ids': ids}).fetchall()
-        return result
+        return self.row_to_dict(result)
+
+    def row_to_dict(self, rows):
+        """
+        Convert a list of Row objects to a list of dictionaries.
+        """
+        if rows is None:
+            return None
+        return [dict(row._asdict()) for row in rows]
