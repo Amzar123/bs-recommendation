@@ -123,6 +123,7 @@ class FpGrowth:
 
         return frequent_patterns
 
+
 class Apriori:
     def __init__(self, transactions, min_support):
         self.itemsets = {}
@@ -191,6 +192,7 @@ class Apriori:
 
         return itemsets
 
+
 class RecommendationService:
     """
     This class is for serve recommendation
@@ -215,7 +217,6 @@ class RecommendationService:
         Function to handle generate recommendation
         """
         # Create object apriori and fp growth
-        
 
         # get student by ids
         students = self.student_repo.get_student_by_ids(ids)
