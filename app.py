@@ -53,7 +53,8 @@ student_repo = StudentRepo(db)
 teacher_repo = TeacherRepository(db)
 
 # Register the blueprint from the service
-recommendation_service = RecommendationService(recommendation_repository, student_repo)
+recommendation_service = RecommendationService(
+    recommendation_repository, student_repo)
 auth_service = AuthService(teacher_repo, student_repo)
 
 # Register the blueprint from the controller
