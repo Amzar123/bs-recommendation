@@ -1,9 +1,11 @@
 """
 Import required dependencies
 """
+import pandas as pd
 from itertools import combinations
 from src.repository.recommendation_repo import RecommendationRepo
 from src.repository.student_repository import StudentRepo
+from mlxtend.preprocessing import TransactionEncoder
 
 
 class TreeNode:
@@ -238,6 +240,66 @@ class Apriori:
         return itemsets
 
 
+class DataPreProcessing:
+    """
+    Class for handling data preprocessing
+    """
+
+    def mapping_student_competency(
+            self,
+            assesment_result_list,
+            mapping_question_comp_list):
+        '''
+        implement to mapping student wrong answer with competency
+        '''
+        student_list = []
+
+        lib = {
+            1: "VRIIC",
+            2: "VRIIF",
+            3: "VPRIF",
+            4: "PWHP",
+            5: "MAVA",
+            6: "MAVP",
+            7: "RPTPT",
+            8: "SPEN",
+            9: "NNQP"
+        }
+
+        for i in assesment_result_list:
+            student = {}
+            comp_list = set()
+            for j, answer in enumerate(i):
+                if answer == 0:
+                    for k, mapping in enumerate(
+                            mapping_question_comp_list[j - 1]):
+                        if mapping == 1:
+                            comp_list.add(lib[k])
+            student["name"] = i[0]
+            student["competencies"] = comp_list
+            student_list.append(student)
+
+        return student_list
+
+    def generate_final_dataset(self, mapped_data):
+        """
+        This function can generate final dataset
+        """
+        final_dataset = []
+        for element in mapped_data:
+            final_dataset.append(element['competencies'])
+        return final_dataset
+
+    def data_transformation(self, final_dataset):
+        """
+        This function is to transform data after final data set was generated
+        """
+        tr = TransactionEncoder()
+        tr_ary = tr.fit(final_dataset).transform(final_dataset)
+        df_incorrect = pd.DataFrame(tr_ary, columns=tr.columns_)
+        return df_incorrect
+
+
 class RecommendationService:
     """
     This class is for serve recommendation
@@ -261,7 +323,15 @@ class RecommendationService:
         """
         Function to handle generate recommendation
         """
-        # Create object apriori and fp growth
+        # read data from csv file
+        df_mapping_question_comp = pd.read_csv(
+            "./data/kompetensi-soal-etp.csv")
+        df_questions = pd.read_csv("./data/soal-etp.csv")
+        df_test_results = pd.read_csv("./data/hasil-tes-etp.csv")
+
+        print(df_mapping_question_comp.head())
+        print(df_questions.head())
+        print(df_test_results.head())
 
         # get student by ids
         students = self.student_repo.get_student_by_ids(ids)
