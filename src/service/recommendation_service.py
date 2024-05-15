@@ -140,7 +140,7 @@ class FpGrowth:
         for item in header_table:
             conditional_pattern_bases = self.projecting_tree(
                 item, header_table)
-            conditional_fp_tree, conditional_header_table = self.build_tree(
+            conditional_fp_tree, _ = self.build_tree(
                 conditional_pattern_bases, min_support)
             if conditional_fp_tree is not None:
                 frequent_sub_patterns = self.fp_growth(
