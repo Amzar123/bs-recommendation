@@ -26,7 +26,7 @@ class StudentRepo:
         query = text(
             'SELECT * FROM students WHERE id = ANY(:ids)')
         result = self.db.session.execute(query, {'ids': ids}).fetchall()
-        return self.row_to_dict(result)
+        return [self.row_to_dict(row) for row in result]
 
     def row_to_dict(self, row):
         """

@@ -181,10 +181,11 @@ class RecommendationController:
 
         ids = request_body['ids']
 
-        self.recommendation_service.generate_recommendations(ids)
+        res = self.recommendation_service.generate_recommendations(ids)
 
         return Response(
             message='Recommendation generated successfully',
+            data=res,
             code=200
         ).to_dict()
 

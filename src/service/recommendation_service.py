@@ -222,17 +222,17 @@ class RecommendationService:
         students = self.student_repo.get_student_by_ids(ids)
 
         # Preprocessing data
-        transactions = []
+        # transactions = []
 
-        apriori = Apriori(transactions, 3)
-        fpgrowth = FpGrowth()
+        # apriori = Apriori(transactions, 3)
+        # fpgrowth = FpGrowth()
 
-        # generate item set with apriori
-        itemsets = apriori.apriori()
+        # # generate item set with apriori
+        # itemsets = apriori.apriori()
 
-        # generate item set with fpgrowth
-        items = fpgrowth.fp_growth(transactions, 3)
+        # # generate item set with fpgrowth
+        # items = fpgrowth.fp_growth(transactions, 3)
 
-        print(items, itemsets)
+        # print(items, itemsets)
 
         return students
