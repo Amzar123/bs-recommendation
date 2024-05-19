@@ -9,6 +9,7 @@ from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 import pandas as pd
 
+
 class TreeNode:
     """
     This class is for building tree as a node
@@ -245,39 +246,101 @@ class DataPreProcessing:
     """
     Class for handling data preprocessing
     """
+    def transform_result_to_biner(self, test_result, questions):
+        question_list = [
+            "soal 1",
+            "soal 2",
+            "soal 3",
+            "soal 4 ",
+            "soal 5",
+            "soal 6",
+            "soal 7 ",
+            "soal 8 ",
+            "soal 9 ",
+            "soal 10",
+            "soal 11",
+            "soal 12",
+            "soal 13",
+            "soal 14",
+            "soal 15",
+            "soal 16",
+            "soal 17",
+            "soal 18",
+            "soal 19",
+            "soal 20",
+            "soal 21",
+            "soal 22",
+            "soal 23",
+            "soal 24",
+            "soal 25",
+        ]
+        index = 0
+        for q in question_list:
+            for i in range(len(test_result)):
+                if questions["key"][index] == "":
+                    test_result[q][i] = 0
+                elif test_result[q][i] == questions["key"][index]:
+                    test_result[q][i] = 1
+                else:
+                    test_result[q][i] = 0
+            index += 1
+
+        return test_result
 
     def mapping_student_competency(
-            self,
-            assesment_result_list,
-            mapping_question_comp_list):
+        self,
+        transformed_data,
+        df_mapping_question_comp):
         '''
-        implement to mapping student wrong answer with competency
+        Implement to map student wrong answers with competencies.
         '''
+        import pandas as pd
+
+        # Convert the first column (score) to a separate series and drop it
+        # from the DataFrame
+        scores = transformed_data.iloc[:, 0]
+        student_answers = transformed_data.iloc[:, 1:]
+
+        # Competencies list
+        lib = [
+            "main_verbs",
+            "tense",
+            "infinitives",
+            "passives",
+            "have_+_participle",
+            "auxiliary_verbs",
+            "pronouns",
+            "nouns",
+            "determiners",
+            "other_adjectives",
+            "prepositions",
+            "conjunctions",
+            "subject_verb_agreement"
+        ]
+
         student_list = []
 
-        lib = {
-            1: "VRIIC",
-            2: "VRIIF",
-            3: "VPRIF",
-            4: "PWHP",
-            5: "MAVA",
-            6: "MAVP",
-            7: "RPTPT",
-            8: "SPEN",
-            9: "NNQP"
-        }
+        for idx, row in student_answers.iterrows():
+            student = {"name": f"student_{idx+1}", "competencies": set()}
 
-        for i in assesment_result_list:
-            student = {}
-            comp_list = set()
-            for j, answer in enumerate(i):
-                if answer == 0:
-                    for k, mapping in enumerate(
-                            mapping_question_comp_list[j - 1]):
-                        if mapping == 1:
-                            comp_list.add(lib[k])
-            student["name"] = i[0]
-            student["competencies"] = comp_list
+            for question_index, answer in row.items():
+                if answer == 0:  # If the answer is wrong
+                    try:
+                        # Strip any leading or trailing spaces
+                        question_index = question_index.strip()
+                        # Extract the question number
+                        question_num = int(question_index.split(' ')[-1]) - 1
+                        if question_num < len(df_mapping_question_comp):
+                            for comp in lib:
+                                if df_mapping_question_comp.at[question_num, comp]:
+                                    student["competencies"].add(comp)
+                    except (ValueError, IndexError) as e:
+                        print(
+                            f"Skipping invalid question index '{question_index}' for student {idx+1}: {e}")
+
+            # Convert the set to a list for JSON serialization or other
+            # processing
+            student["competencies"] = list(student["competencies"])
             student_list.append(student)
 
         return student_list
@@ -324,34 +387,40 @@ class RecommendationService:
         """
         Function to handle generate recommendation
         """
-        # Create object for data preprocessing 
+        # Create object for data preprocessing
         data_preprocessing = DataPreProcessing()
         # fp_growth = FpGrowth()
 
         # read data from csv file
         df_mapping_question_comp = pd.read_csv(
             "./data/kompetensi-soal-etp.csv")
-        # df_questions = pd.read_csv("./data/soal-etp.csv")
+        df_questions = pd.read_csv("./data/soal-etp.csv")
         df_test_results = pd.read_csv("./data/hasil-tes-etp.csv")
 
         # Data preprocessing
-        student_comp = data_preprocessing.mapping_student_competency(df_test_results, df_mapping_question_comp)
+        transormed_data = data_preprocessing.transform_result_to_biner(df_test_results, df_questions)
+        student_comp = data_preprocessing.mapping_student_competency(
+            transormed_data, df_mapping_question_comp)
         final_dataset = data_preprocessing.generate_final_dataset(student_comp)
-        transform_dataset = data_preprocessing.data_transformation(final_dataset)
+        transform_dataset = data_preprocessing.data_transformation(
+            final_dataset)
 
-        # Data modelling 
-        items = fpgrowth(transform_dataset, 0.6, use_colnames=True)
+        # Data modelling
+        items = fpgrowth(transform_dataset, 0.9, use_colnames=True)
 
         # Building association rules
-        rules = association_rules(items, metric="confidence", min_threshold=0.1)
+        rules = association_rules(
+            items, metric="confidence", min_threshold=0.9)
 
-        rules_list = rules.values.tolist()
+        rule_list = []
+        for _, rule in rules.iterrows():
+            rule_dict = {
+                "antecedents": list(rule['antecedents']),
+                "consequents": list(rule['consequents']),
+                "support": rule['support'],
+                "confidence": rule['confidence'],
+                "lift": rule['lift']
+            }
+            rule_list.append(rule_dict)
 
-        # print(df_mapping_question_comp.head())
-        # print(df_questions.head())
-        # print(df_test_results.head())
-
-        # get student by ids
-        # students = self.student_repo.get_student_by_ids(ids)
-
-        return rules_list
+        return rule_list
