@@ -247,7 +247,7 @@ class DataPreProcessing:
     Class for handling data preprocessing
     """
 
-    def recommend_materials(self, student_competencies, association_rules):
+    def recommend_materials(self, student_competencies, rules):
         """
         Generate recommendation materials
         """
@@ -335,7 +335,7 @@ class DataPreProcessing:
             recommendations = set()
 
             # Iterate through each association rule
-            for idx, rule in association_rules.iterrows():
+            for idx, rule in rules.iterrows():
                 antecedents = set(rule['antecedents'])
                 consequents = set(rule['consequents'])
 
@@ -359,48 +359,10 @@ class DataPreProcessing:
 
         return student_recommendations
 
-    def map_student_to_material(self, student_competencies, rules):
-        """
-        This function handle to map student to material
-        """
-        student_material_mapping = {}
-
-        # Define the mapping of competencies to materials
-        competency_to_material = {
-            "main_verbs": "materi 1",
-            "tense": "materi 2",
-            "infinitives": "materi 3",
-            "passives": "materi 4",
-            "have_+_participle": "materi 5",
-            "auxiliary_verbs": "materi 6",
-            "pronouns": "materi 7",
-            "nouns": "materi 8",
-            "determiners": "materi 9",
-            "other_adjectives": "materi 10",
-            "prepositions": "materi 11",
-            "conjunctions": "materi 12",
-            "subject_verb_agreement": "materi 13"
-        }
-
-        # Iterate through each student's competencies
-        for student_data in student_competencies:
-            student_name = student_data["name"]
-            competencies = student_data["competencies"]
-            # Initialize an empty set to store learned materials for each
-            # student
-            material_learned = set()
-
-            # Map competencies to materials
-            for competency in competencies:
-                if competency in competency_to_material:
-                    material_learned.add(competency_to_material[competency])
-
-            # Map student to learned materials
-            student_material_mapping[student_name] = list(material_learned)
-
-        return student_material_mapping
-
     def transform_result_to_biner(self, test_result, questions):
+        """
+        This function is to transform result to biner data
+        """
         question_list = [
             "soal 1",
             "soal 2",
