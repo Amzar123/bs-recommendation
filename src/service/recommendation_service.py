@@ -1,12 +1,13 @@
 """
 Import required dependencies
 """
-import pandas as pd
 from itertools import combinations
 from src.repository.recommendation_repo import RecommendationRepo
 from src.repository.student_repository import StudentRepo
 from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import fpgrowth, association_rules
 
+import pandas as pd
 
 class TreeNode:
     """
@@ -323,31 +324,34 @@ class RecommendationService:
         """
         Function to handle generate recommendation
         """
+        # Create object for data preprocessing 
+        data_preprocessing = DataPreProcessing()
+        # fp_growth = FpGrowth()
+
         # read data from csv file
         df_mapping_question_comp = pd.read_csv(
             "./data/kompetensi-soal-etp.csv")
-        df_questions = pd.read_csv("./data/soal-etp.csv")
+        # df_questions = pd.read_csv("./data/soal-etp.csv")
         df_test_results = pd.read_csv("./data/hasil-tes-etp.csv")
 
-        print(df_mapping_question_comp.head())
-        print(df_questions.head())
-        print(df_test_results.head())
+        # Data preprocessing
+        student_comp = data_preprocessing.mapping_student_competency(df_test_results, df_mapping_question_comp)
+        final_dataset = data_preprocessing.generate_final_dataset(student_comp)
+        transform_dataset = data_preprocessing.data_transformation(final_dataset)
+
+        # Data modelling 
+        items = fpgrowth(transform_dataset, 0.6, use_colnames=True)
+
+        # Building association rules
+        rules = association_rules(items, metric="confidence", min_threshold=0.1)
+
+        rules_list = rules.values.tolist()
+
+        # print(df_mapping_question_comp.head())
+        # print(df_questions.head())
+        # print(df_test_results.head())
 
         # get student by ids
-        students = self.student_repo.get_student_by_ids(ids)
+        # students = self.student_repo.get_student_by_ids(ids)
 
-        # Preprocessing data
-        # transactions = []
-
-        # apriori = Apriori(transactions, 3)
-        # fpgrowth = FpGrowth()
-
-        # # generate item set with apriori
-        # itemsets = apriori.apriori()
-
-        # # generate item set with fpgrowth
-        # items = fpgrowth.fp_growth(transactions, 3)
-
-        # print(items, itemsets)
-
-        return students
+        return rules_list
