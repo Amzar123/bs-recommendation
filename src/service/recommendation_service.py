@@ -246,6 +246,160 @@ class DataPreProcessing:
     """
     Class for handling data preprocessing
     """
+
+    def recommend_materials(self, student_competencies, association_rules):
+        """
+        Generate recommendation materials
+        """
+        student_recommendations = {}
+
+        # Define the mapping of competencies to materials
+        competency_to_material = {
+            "main_verbs": "materi 1",
+            "tense": "materi 2",
+            "infinitives": "materi 3",
+            "passives": "materi 4",
+            "have_+_participle": "materi 5",
+            "auxiliary_verbs": "materi 6",
+            "pronouns": "materi 7",
+            "nouns": "materi 8",
+            "determiners": "materi 9",
+            "other_adjectives": "materi 10",
+            "prepositions": "materi 11",
+            "conjunctions": "materi 12",
+            "subject_verb_agreement": "materi 13"
+        }
+
+        material_details = {
+            "materi 1": [
+                "Penggunaan kata kerja utama dalam kalimat",
+                "Perbedaan antara kata kerja aksi dan kata kerja statis",
+                "Bentuk kata kerja dalam tenses berbeda"],
+            "materi 2": [
+                "Present Simple dan Present Continuous",
+                "Past Simple dan Past Continuous",
+                "Future Simple dan Future Continuous",
+                "Present Perfect dan Past Perfect",
+                "Penggunaan tenses dalam konteks berbeda"],
+            "materi 3": [
+                "Penggunaan infinitive (to + verb) dalam kalimat",
+                "Infinitive dengan dan tanpa 'to'",
+                "Penggunaan infinitive setelah kata kerja tertentu"],
+            "materi 4": [
+                "Struktur kalimat pasif",
+                "Perubahan dari kalimat aktif ke pasif",
+                "Penggunaan pasif dalam berbagai tenses"],
+            "materi 5": [
+                "Penggunaan Present Perfect Tense",
+                "Struktur kalimat Present Perfect",
+                "Penggunaan Past Perfect Tense"],
+            "materi 6": [
+                "Penggunaan kata kerja bantu (do, does, did)",
+                "Penggunaan modal verbs (can, could, may, might, must, etc.)",
+                "Bentuk negatif dan pertanyaan menggunakan kata kerja bantu"],
+            "materi 7": [
+                "Penggunaan pronoun subjek (I, you, he, she, it, we, they)",
+                "Penggunaan pronoun objek (me, you, him, her, it, us, them)",
+                "Penggunaan possessive pronouns (my, your, his, her, its, our, their)"],
+            "materi 8": [
+                "Penggunaan kata benda dalam kalimat",
+                "Singular dan plural nouns",
+                "Countable dan uncountable nouns"],
+            "materi 9": [
+                "Penggunaan determiners (a, an, the)",
+                "Penggunaan quantifiers (some, any, few, many, etc.)",
+                "Penggunaan demonstrative determiners (this, that, these, those)"],
+            "materi 10": [
+                "Penggunaan adjective dalam kalimat",
+                "Perbandingan adjective (comparative dan superlative)",
+                "Penggunaan adjective dalam berbagai posisi dalam kalimat"],
+            "materi 11": [
+                "Penggunaan prepositions of place (in, on, at, etc.)",
+                "Penggunaan prepositions of time (in, on, at, etc.)",
+                "Prepositions setelah kata kerja tertentu (depend on, listen to, etc.)"],
+            "materi 12": [
+                "Penggunaan coordinating conjunctions (and, but, or, etc.)",
+                "Penggunaan subordinating conjunctions (because, although, if, etc.)",
+                "Penggunaan correlative conjunctions (either...or, neither...nor, etc.)"],
+            "materi 13": [
+                "Kesepakatan antara subjek dan kata kerja",
+                "Penggunaan kata kerja dengan subjek tunggal dan jamak",
+                "Kesepakatan dalam kalimat kompleks"]}
+
+        # Iterate through each student's competencies
+        for student_data in student_competencies:
+            student_name = student_data["name"]
+            competencies = set(student_data["competencies"])
+            # Initialize an empty set to store recommended materials for each
+            # student
+            recommendations = set()
+
+            # Iterate through each association rule
+            for idx, rule in association_rules.iterrows():
+                antecedents = set(rule['antecedents'])
+                consequents = set(rule['consequents'])
+
+                # Check if the student is missing any antecedents
+                missing_antecedents = antecedents - competencies
+                if missing_antecedents:
+                    # Recommend all materials related to the missing
+                    # antecedents
+                    for antecedent in missing_antecedents:
+                        if antecedent in competency_to_material:
+                            recommendations.add(
+                                competency_to_material[antecedent])
+
+            # Map student to recommended materials with details
+            student_material_details = []
+            for material in recommendations:
+                if material in material_details:
+                    student_material_details.extend(material_details[material])
+
+            student_recommendations[student_name] = student_material_details
+
+        return student_recommendations
+
+    def map_student_to_material(self, student_competencies, rules):
+        """
+        This function handle to map student to material
+        """
+        student_material_mapping = {}
+
+        # Define the mapping of competencies to materials
+        competency_to_material = {
+            "main_verbs": "materi 1",
+            "tense": "materi 2",
+            "infinitives": "materi 3",
+            "passives": "materi 4",
+            "have_+_participle": "materi 5",
+            "auxiliary_verbs": "materi 6",
+            "pronouns": "materi 7",
+            "nouns": "materi 8",
+            "determiners": "materi 9",
+            "other_adjectives": "materi 10",
+            "prepositions": "materi 11",
+            "conjunctions": "materi 12",
+            "subject_verb_agreement": "materi 13"
+        }
+
+        # Iterate through each student's competencies
+        for student_data in student_competencies:
+            student_name = student_data["name"]
+            competencies = student_data["competencies"]
+            # Initialize an empty set to store learned materials for each
+            # student
+            material_learned = set()
+
+            # Map competencies to materials
+            for competency in competencies:
+                if competency in competency_to_material:
+                    material_learned.add(competency_to_material[competency])
+
+            # Map student to learned materials
+            student_material_mapping[student_name] = list(material_learned)
+
+        return student_material_mapping
+
     def transform_result_to_biner(self, test_result, questions):
         question_list = [
             "soal 1",
@@ -288,13 +442,12 @@ class DataPreProcessing:
         return test_result
 
     def mapping_student_competency(
-        self,
-        transformed_data,
-        df_mapping_question_comp):
+            self,
+            transformed_data,
+            df_mapping_question_comp):
         '''
         Implement to map student wrong answers with competencies.
         '''
-        import pandas as pd
 
         # Convert the first column (score) to a separate series and drop it
         # from the DataFrame
@@ -398,7 +551,8 @@ class RecommendationService:
         df_test_results = pd.read_csv("./data/hasil-tes-etp.csv")
 
         # Data preprocessing
-        transormed_data = data_preprocessing.transform_result_to_biner(df_test_results, df_questions)
+        transormed_data = data_preprocessing.transform_result_to_biner(
+            df_test_results, df_questions)
         student_comp = data_preprocessing.mapping_student_competency(
             transormed_data, df_mapping_question_comp)
         final_dataset = data_preprocessing.generate_final_dataset(student_comp)
@@ -412,15 +566,8 @@ class RecommendationService:
         rules = association_rules(
             items, metric="confidence", min_threshold=0.9)
 
-        rule_list = []
-        for _, rule in rules.iterrows():
-            rule_dict = {
-                "antecedents": list(rule['antecedents']),
-                "consequents": list(rule['consequents']),
-                "support": rule['support'],
-                "confidence": rule['confidence'],
-                "lift": rule['lift']
-            }
-            rule_list.append(rule_dict)
+        # Generate recommendation materials
+        student_recommendations = data_preprocessing.recommend_materials(
+            student_comp, rules)
 
-        return rule_list
+        return student_recommendations
