@@ -339,7 +339,8 @@ class DataPreProcessing:
                 antecedents = set(rule['antecedents'])
                 consequents = set(rule['consequents'])
 
-                uncompeten = list(set(competency_to_material.keys()) - competencies)
+                uncompeten = list(
+                    set(competency_to_material.keys()) - competencies)
 
                 # Check if the student is missing any antecedents
                 missing_antecedents = antecedents - set(uncompeten)
