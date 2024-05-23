@@ -1,0 +1,10 @@
+@startuml
+class RecommendationController {
+    upload_questions()
+    generate_recommendation()
+    get_recommendations()
+        recommendation_service
+    blueprint
+    __init__()
+}
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+class AuthController {
+    login()
+    logout()
+        auth_service
+    blueprint
+    __init__()
+}
+@enduml

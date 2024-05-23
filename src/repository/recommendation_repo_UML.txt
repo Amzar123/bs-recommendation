@@ -1,0 +1,8 @@
+@startuml
+class RecommendationRepo {
+    get_recommendations()
+    row_to_dict()
+        db
+    __init__()
+}
+@enduml

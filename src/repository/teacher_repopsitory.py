@@ -1,7 +1,7 @@
 from sqlalchemy import text
 
 
-class TeacherRepository:
+class TeacherRepo:
     """
     This class represents the recommendation repository.
     """

@@ -1,0 +1,8 @@
+@startuml
+class TeacherRepo {
+    get_teacher_by_email()
+    row_to_dict()
+        db
+    __init__()
+}
+@enduml

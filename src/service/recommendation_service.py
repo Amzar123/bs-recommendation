@@ -7,7 +7,34 @@ from src.repository.student_repository import StudentRepo
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
+from CoreNLG.NlgTools import NlgTools
+from CoreNLG.PredefObjects import TextVar
+
 import pandas as pd
+
+
+class NLGCore:
+    """
+    Class to handle NLGCore
+    """
+
+    def __init__(self) -> None:
+        self.nlg = NlgTools()
+
+    def generate_text(self, text_list):
+        """
+        Function to generate text using CoreNLG
+        """
+        text_rule = TextVar(
+            self.nlg.nlg_syn('Kamu harus belajar',
+                             'Untuk meningkatkan kemampuan bahasa inggrismu, maka kamu harus belajar '),
+            ', '.join([text.lower() for text in text_list[:-1]]) + ', dan ' + text_list[-1].lower() + '.',
+            self.nlg.nlg_syn('Semoga rekomendasi nya bisa menjadikan motivasi untuk meningkatkan kemampuanmu!.',
+                             'Semangat, semoga sukses pada assessment selanjutnya')
+        )
+
+        text = self.nlg.write_text(text_rule)
+        return text
 
 
 class TreeNode:
@@ -247,6 +274,9 @@ class DataPreProcessing:
     Class for handling data preprocessing
     """
 
+    def __init__(self) -> None:
+        self.obj_nlg = NLGCore()
+
     def recommend_materials(self, student_competencies, rules):
         """
         Generate recommendation materials
@@ -359,7 +389,8 @@ class DataPreProcessing:
                 if material in material_details:
                     student_material_details.extend(material_details[material])
 
-            student_recommendations[student_name] = student_material_details
+            student_recommendations[student_name] = self.obj_nlg.generate_text(
+                student_material_details)
 
         return student_recommendations
 
@@ -534,6 +565,6 @@ class RecommendationService:
 
         # Generate recommendation materials
         student_recommendations = data_preprocessing.recommend_materials(
-            student_comp, rules)
+            student_comp[:12], rules)
 
         return student_recommendations

@@ -1,0 +1,9 @@
+@startuml
+class StudentRepo {
+    get_student_by_email()
+    get_student_by_ids()
+    row_to_dict()
+        db
+    __init__()
+}
+@enduml

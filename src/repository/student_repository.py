@@ -21,7 +21,7 @@ class StudentRepo:
     
     def get_student_by_ids(self, ids):
         """
-        This is function to get student by query
+        This is function to get student by query 
         """
         query = text(
             'SELECT * FROM students WHERE id = ANY(:ids)')

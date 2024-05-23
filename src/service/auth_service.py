@@ -1,7 +1,7 @@
 """
 Import repository
 """
-from src.repository.teacher_repopsitory import TeacherRepository
+from src.repository.teacher_repopsitory import TeacherRepo
 from src.repository.student_repository import StudentRepo
 
 
@@ -12,7 +12,7 @@ class AuthService:
 
     def __init__(
             self,
-            teacher_repo: TeacherRepository,
+            teacher_repo: TeacherRepo,
             student_repo: StudentRepo):
         self.teacher_repo = teacher_repo
         self.student_repo = student_repo
