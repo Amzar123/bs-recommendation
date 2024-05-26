@@ -17,7 +17,7 @@ from src.controller.auth_controller import AuthController
 # Import repository
 from src.repository.recommendation_repo import RecommendationRepo
 from src.repository.student_repository import StudentRepo
-from src.repository.teacher_repopsitory import TeacherRepository
+from src.repository.teacher_repopsitory import TeacherRepo
 
 # Import service
 from src.service.recommendation_service import RecommendationService
@@ -50,7 +50,7 @@ migrate = Migrate(app, db)
 # Register the blueprint from the repository
 recommendation_repository = RecommendationRepo(db)
 student_repo = StudentRepo(db)
-teacher_repo = TeacherRepository(db)
+teacher_repo = TeacherRepo(db)
 
 # Register the blueprint from the service
 recommendation_service = RecommendationService(
