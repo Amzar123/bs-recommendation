@@ -8,7 +8,6 @@ from src.repository.student_repository import StudentRepo
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 
-
 import pandas as pd
 
 

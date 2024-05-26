@@ -92,7 +92,7 @@ class DataPreProcessing:
                 "Kesepakatan dalam kalimat kompleks"]}
 
         # Iterate through each student's competencies
-        for student_data in student_competencies: 
+        for student_data in student_competencies:
             student_name = student_data["name"]
             competencies = set(student_data["competencies"])
             # Initialize an empty set to store recommended materials for each

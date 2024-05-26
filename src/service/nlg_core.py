@@ -1,6 +1,7 @@
 from CoreNLG.NlgTools import NlgTools
 from CoreNLG.PredefObjects import TextVar
 
+
 class NLGCore:
     """
     Class to handle NLGCore
@@ -23,4 +24,3 @@ class NLGCore:
 
         text = self.nlg.write_text(text_rule)
         return text
-

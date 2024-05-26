@@ -10,6 +10,7 @@ class TreeNode:
         self.children = {}
         self.link = None
 
+
 class FpGrowth:
     """
     Class for building fp-growth algorithm

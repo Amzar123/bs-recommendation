@@ -1,5 +1,6 @@
 from itertools import combinations
 
+
 class Apriori:
     """
     This class is for handling apriori algorithm
