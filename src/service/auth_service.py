@@ -1,8 +1,8 @@
 """
 Import repository
 """
-from src.repository.teacher_repopsitory import TeacherRepo
-from src.repository.student_repository import StudentRepo
+from src.repository.teacher_repo import TeacherRepo
+from src.repository.student_repo import StudentRepo
 
 
 class AuthService:

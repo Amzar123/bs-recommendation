@@ -3,7 +3,7 @@ Import required dependencies
 """
 from src.service.data_preprocessing import DataPreProcessing
 from src.repository.recommendation_repo import RecommendationRepo
-from src.repository.student_repository import StudentRepo
+from src.repository.student_repo import StudentRepo
 
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
